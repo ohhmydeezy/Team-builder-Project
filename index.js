@@ -88,7 +88,14 @@ const addMember = () => {
         if (confirm) {
             return addMember();
         } else {
-            return fs.writeFileSync(OUTPUT_DIR, outputPath, render(teamMembers), "utf-8");
+            // Check if the output directory exists
+            if (!fs.existsSync(OUTPUT_DIR)) {
+                // If it doesn't exist, create it
+                fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+            }
+            // Write the team data to the output file
+            fs.writeFileSync(outputPath, render(teamMembers), "utf-8");
+            console.log("Team data has been written to:", outputPath);
         }
     });
 };
