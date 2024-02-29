@@ -10,10 +10,9 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./page-template.js");
 
+const teamMembers = [];
 
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
-
-const promptUser = () => {
+const addMember = () => {
     return inquirer.prompt([
         {
             type: "input",
@@ -37,80 +36,61 @@ const promptUser = () => {
             choices: ["Manager", "Engineer", "Intern"]
         }
     ])
-        .then(function ({ name, id, email, role }) {
-            if (role === "Manager") {
-                return inquirer.prompt([
-                    {
-                        type: "input",
-                        name: "officeNumber",
-                        message: "What is the manager's office number?"
-                    }
-                ])
-                    .then(function ({ officeNumber }) {
-                        return new Manager(name, id, email, officeNumber);
-                    });
-            }
-            else if (role === "Engineer") {
-                return inquirer.prompt([
-                    {
-                        type: "input",
-                        name: "github",
-                        message: "What is the engineer's github username?"
-                    }
-                ])
-                    .then(function ({ github }) {
-                        return new Engineer(name, id, email, github);
-                    });
-            }
-            else if (role === "Intern") {
-                return inquirer.prompt([
-                    {
-                        type: "input",
-                        name: "school",
-                        message: "What is the intern's school?"
-                    }
-                ])
-                    .then(function ({ school }) {
-                        return new Intern(name, id, email, school);
-                    });
-            }
-        });
-}
-
-const teamMembers = [];
-
-const addMember = () => {
-    promptUser()
-        .then(function (member) {
-            teamMembers.push(member);
-            inquirer.prompt([
+    .then(function ({ name, id, email, role }) {
+        if (role === "Manager") {
+            return inquirer.prompt([
                 {
-                    type: "confirm",
-                    name: "confirm",
-                    message: "Would you like to add another team member?"
+                    type: "input",
+                    name: "officeNumber",
+                    message: "What is the manager's office number?"
                 }
             ])
-                .then(function ({ confirm }) {
-                    if (confirm) {
-                        addMember();
-                    }
-                    else {
-                        fs.writeFileSync(outputPath, render(teamMembers), "utf-8");
-                    }
-                });
-        });
-}
+            .then(function ({ officeNumber }) {
+                return new Manager(name, id, email, officeNumber);
+            });
+        }
+        else if (role === "Engineer") {
+            return inquirer.prompt([
+                {
+                    type: "input",
+                    name: "github",
+                    message: "What is the engineer's github username?"
+                }
+            ])
+            .then(function ({ github }) {
+                return new Engineer(name, id, email, github);
+            });
+        }
+        else if (role === "Intern") {
+            return inquirer.prompt([
+                {
+                    type: "input",
+                    name: "school",
+                    message: "What is the intern's school?"
+                }
+            ])
+            .then(function ({ school }) {
+                return new Intern(name, id, email, school);
+            });
+        }
+    })
+    .then(function (member) {
+        teamMembers.push(member);
+        return inquirer.prompt([
+            {
+                type: "confirm",
+                name: "confirm",
+                message: "Would you like to add another team member?"
+            }
+        ]);
+    })
+    .then(function ({ confirm }) {
+        if (confirm) {
+            return addMember();
+        } else {
+            return fs.writeFileSync(OUTPUT_DIR, outputPath, render(teamMembers), "utf-8");
+        }
+    });
+};
 
 addMember();
-
-const writeToFile = (fileName, data) => {
-    fs.writeFileSync()
-}
-
-const init = () => {
-    promptUser()
-        .then((answers) => console.log(answers))
-        .catch((err) => console.error(err));
-}
-
-init();
