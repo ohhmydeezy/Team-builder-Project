@@ -48,7 +48,7 @@ Once all of the elemeents were built, the next step was to run node to check if 
 
 
 The final product: 
-![start screen](./assets/Images/final%20prodcuct.png)
+![start screen](./assets/Images/Final%20Product.png)
 
 Usage: 
 
